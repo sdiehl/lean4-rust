@@ -1,7 +1,8 @@
 /-
 Copyright (c) 2019 Microsoft Corporation. All rights reserved.
+Copyright (c) 2026 OCX Group Inc. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Leonardo de Moura
+Authors: Leonardo de Moura, OCX Group Inc.
 -/
 module
 

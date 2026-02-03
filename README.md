@@ -1,6 +1,6 @@
 # Lean 4 VM Backend
 
-Fork of Lean 4 with an experimental bytecode compiler targeting a Rust VM.
+Fork of Lean 4.27.0 with an experimental bytecode compiler targeting a Rust VM.
 
 ## Build
 

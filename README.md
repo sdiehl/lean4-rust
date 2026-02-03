@@ -1,25 +1,28 @@
-This is the repository for **Lean 4**.
+# Lean 4 VM Backend
 
-# About
+Fork of Lean 4 with an experimental bytecode compiler targeting a Rust VM.
 
-- [Quickstart](https://lean-lang.org/install/)
-- [Homepage](https://lean-lang.org)
-- [Theorem Proving Tutorial](https://lean-lang.org/theorem_proving_in_lean4/)
-- [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/)
-- [Documentation Overview](https://lean-lang.org/learn/)
-- [Language Reference](https://lean-lang.org/doc/reference/latest/)
-- [Release notes](RELEASES.md) starting at v4.0.0-m3
-- [Examples](https://lean-lang.org/examples/)
-- [External Contribution Guidelines](CONTRIBUTING.md)
+## Build
 
-# Installation
+```bash
+make -j -C build/release
+```
 
-See [Install Lean](https://lean-lang.org/install/).
+The compiler is in `./build/release/stage1/bin/lean`. Put this directory in your
+`PATH` so that the `lake` and `lean` binaries are available.
 
-# Contributing
+## Usage
 
-Please read our [Contribution Guidelines](CONTRIBUTING.md) first.
+To compile a single file to bytecode:
 
-# Building from Source
+```bash
+./build/release/stage1/bin/lean -Y output.leanbc input.lean
+```
 
-See [Building Lean](doc/make/index.md).
+## Running Bytecode
+
+The bytecode runs on [lean4-vm](https://github.com/sdiehl/lean4-vm):
+
+```bash
+lean4-vm output.leanbc
+```

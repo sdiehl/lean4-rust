@@ -11,6 +11,7 @@ import Lean.Elab.ParseImportsFast
 import Lean.Server.Watchdog
 import Lean.Server.FileWorker
 import Lean.Compiler.IR.EmitC
+import Lean.Compiler.IR.EmitBytecode
 
 /-  Lean companion to  `shell.cpp` -/
 
@@ -152,6 +153,7 @@ def displayHelp (useStderr : Bool) : IO Unit := do
   out.putStrLn    "  -i, --i=iname          create ilean file"
   out.putStrLn    "  -c, --c=fname          name of the C output file"
   out.putStrLn    "  -b, --bc=fname         name of the LLVM bitcode file"
+  out.putStrLn    "  -Y, --bytecode=fname   name of the VM bytecode output file"
   out.putStrLn    "      --stdin            take input from stdin"
   out.putStrLn    "  -R, --root=dir         set package root directory from which the module name\n"
   out.putStrLn    "                         of the input file is calculated\n"
@@ -246,6 +248,7 @@ structure ShellOptions where
   ileanFileName? : Option System.FilePath := none
   cFileName? : Option System.FilePath := none
   bcFileName? : Option System.FilePath := none
+  bytecodeFileName? : Option System.FilePath := none
   jsonOutput : Bool := false
   errorOnKinds : Array Name := #[]
   printStats : Bool := false
@@ -328,6 +331,8 @@ def ShellOptions.process (opts : ShellOptions)
     return {opts with cFileName? := ← checkOptArg "c" optArg?}
   | 'b' => -- `-b, --bc=fname`
     return {opts with bcFileName? := ← checkOptArg "b" optArg?}
+  | 'Y' => -- `-Y, --bytecode=fname`
+    return {opts with bytecodeFileName? := ← checkOptArg "Y" optArg?}
   | 's' => -- `-s, --tstack=num`
     let arg ← checkOptArg "s" optArg?
     let some stackSize := arg.toNat?
@@ -550,6 +555,13 @@ def shellMain (args : List String) (opts : ShellOptions) : IO UInt32 := do
       initLLVM
       profileitIO "LLVM code generation" opts.leanOpts do
         emitLLVM env mainModuleName bc
+    if let some vmbc := opts.bytecodeFileName? then
+      let .ok out ← IO.FS.Handle.mk vmbc .write |>.toBaseIO
+        | IO.eprintln s!"failed to create '{vmbc}'"
+          return 1
+      profileitIO "VM bytecode generation" opts.leanOpts do
+        let data ← IO.ofExcept <| IR.emitBytecode env mainModuleName
+        out.write data
   displayCumulativeProfilingTimes
   if Internal.hasAddressSanitizer () then
     return if env?.isSome then 0 else 1

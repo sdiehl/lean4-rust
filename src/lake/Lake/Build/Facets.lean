@@ -147,6 +147,9 @@ builtin_facet c : Module => FilePath
 /-- The LLVM bitcode (`bc`) file produced by `lean`. -/
 builtin_facet bc : Module => FilePath
 
+/-- The bytecode file produced by `lean` for the VM backend. -/
+builtin_facet vm : Module => FilePath
+
 /--
 The object file `.c.o` built from `c`.
 On Windows, this is `c.o.noexport`, on other systems it is `c.o.export`).

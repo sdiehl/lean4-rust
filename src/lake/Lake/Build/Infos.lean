@@ -180,6 +180,9 @@ namespace Module
 @[inherit_doc cFacet] public abbrev bc (self : Module) :=
   self.facetCore bcFacet
 
+@[inherit_doc vmFacet] public abbrev vm (self : Module) :=
+  self.facetCore vmFacet
+
 @[inherit_doc oFacet] public abbrev o (self : Module) :=
   self.facetCore oFacet
 

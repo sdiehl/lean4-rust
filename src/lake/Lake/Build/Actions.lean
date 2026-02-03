@@ -44,6 +44,9 @@ public def compileLeanModule
   if let some bcFile := arts.bc? then
     createParentDirs bcFile
     args := args ++ #["-b", bcFile.toString]
+  if let some vmFile := arts.vm? then
+    createParentDirs vmFile
+    args := args ++ #["-Y", vmFile.toString]
   createParentDirs setupFile
   IO.FS.writeFile setupFile (toJson setup).pretty
   args := args ++ #["--setup", setupFile.toString]
